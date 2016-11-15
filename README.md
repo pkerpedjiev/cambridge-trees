@@ -1,3 +1,12 @@
+Install some software:
+
+```
+brew install gdal
+npm install topojson -g
+
+pip install shapely
+```
+
 Get the data:
 
 ```
@@ -11,17 +20,25 @@ unzip ASSESSING_ParcelMapIndexFY2016.shp.zip
 Convert to GeoJSON and WGS84 coordinates [1,2]:
 
 ```
-ogr2ogr -t_srs WGS84 -f GeoJSON -select species,diameter cambridge-trees.json ENVIRONMENTAL_StreetTrees.shp
-ogr2ogr -t_srs WGS84 -f GeoJSON parcel-map.json ASSESSING_ParcelMapIndexFY2016.shp
+ogr2ogr -t_srs WGS84 -f GeoJSON -select species,diameter trees.json ENVIRONMENTAL_StreetTrees.shp
+ogr2ogr -t_srs WGS84 -f GeoJSON blocks.json ASSESSING_ParcelMapIndexFY2016.shp
+```
+
+Count the trees in each block (Combining different types of Maple, Elm, Linden, etc...). 
+To avoid that find the line with `split(',')` in `trees_to_blocks.py`.:
+
+```
+pypy scripts/trees_to_blocks.py trees.json blocks.json
 ```
 
 Convert to topojson, excluding various fields:
 
 ```
-geo2topo cambridge-trees.json > cambridge-trees.topo
+geo2topo trees.json > trees.topo
 ```
 
 References:
 
 [1] [Transform Projections with GDAL / OGR](http://gothos.info/2009/04/transform-projections-with-gdal-ogr/)
+
 [2] [Interactive Map with d3.js](http://www.tnoda.com/blog/2013-12-07)
