@@ -8,10 +8,8 @@ var bgRect = svg.append('rect')
               .attr('height', height)
               .attr('fill', 'white');
 
-/*
 var gBackground = d3.select('svg')
           .append('g')
-*/
 var g = svg.append('g')
 
 var legendColumnWidth = 90;
@@ -21,7 +19,6 @@ var gBlocks = g.append('g');
 var gRoads = g.append('g')
 var gLegend = svg.append('g')
                  .attr('transform', 'translate(' + (width - 2 * legendColumnWidth - 10) + ',55)')
-/*
 
 svg.append('text')
 .classed('title', true)
@@ -47,7 +44,6 @@ gAbstract.selectAll('.abstract')
 .classed('abstract',true)
 .attr('y', function(d,i) { return 10 * i; })
 .text(function(d) { return d; });
-*/ 
 
 var projection = d3.geoMercator()
 .scale(1000000)
