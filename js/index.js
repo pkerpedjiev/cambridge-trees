@@ -135,10 +135,7 @@ d3.json("block_trees.json", function(error, data) {
     // a list of the tree types, sorted by how common they are
     var treeList = treeNames.values().sort(function(a,b) { return popularTreeCounts[b] - popularTreeCounts[a]} );
     var itemBarWidth = 20;
-    var itemBarScale = d3.scaleLinear()
-                         .domain([0, popularTreeCounts[treeList[0]]])
-                         .range([4,20])
-    
+    var itemBarLength = 6
 
     var halfTreeListLength = Math.ceil(treeList.length / 2);
     var legendItems = gLegend.selectAll('.legend-item')
@@ -155,15 +152,13 @@ d3.json("block_trees.json", function(error, data) {
         .attr('dy', 8)
         .attr('dx', 4);
 
-    /*
     legendItems.append('rect')
-        .attr('x', function(d) { return -itemBarScale(popularTreeCounts[d]); })
+        .attr('x', -itemBarLength)
         .attr('y', 2)
         .attr('height', legendRowHeight - 4)
-        .attr('width', function(d) { return itemBarScale(popularTreeCounts[d]); })
+        .attr('width', itemBarLength)
         .classed('legend-rect', true)
         .style('fill', function(d) { return colorScale(d) }) ;
-    */
     /*
     legendItems.on('mouseover', function(d) {
         d3.selectAll('.legend-rect').classed('selected', false);
