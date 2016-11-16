@@ -18,7 +18,7 @@ npm install topojson -g
 pip install shapely
 ```
 
-### Getting the data
+### Preparing the data
 
 Get the data:
 
@@ -53,11 +53,21 @@ To avoid that find the line with `split(',')` in `trees_to_blocks.py`.:
 pypy scripts/trees_to_blocks.py trees.json blocks.json
 ```
 
-Convert to topojson, excluding various fields:
+Convert the trees file to `topojson` to save space. Quantizing values reduces the file size from ~8Mb to ~500Kb, at the expense of some barely visible resolution.
 
 ```
-geo2topo trees.json > trees.topo
+geo2topo trees.json -q 1000 > trees.topo
 ```
+
+### Making the Actual Map
+
+Making the map itself requires a few steps. These steps will be enumerated in the order in which I completed them. They don't necessarily need to be done in this order.
+
+#### Drawing the parcels and coloring according to tree types
+
+The first thing we need to do is draw each parcel. 
+
+
 
 References:
 
