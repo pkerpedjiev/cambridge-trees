@@ -40,6 +40,12 @@ ogr2ogr -t_srs WGS84 -f GeoJSON blocks.json ASSESSING_ParcelMapIndexFY2016.shp
 ogr2ogr -t_srs WGS84 -f GeoJSON roads.json BASEMAP_Roads.shp
 ```
 
+Convert the roads data to TopoJSON to save some space:
+
+```
+geo2topo roads.json -q 1000 > roads.topo
+```
+
 Count the trees in each block (Combining different types of Maple, Elm, Linden, etc...). 
 To avoid that find the line with `split(',')` in `trees_to_blocks.py`.:
 
