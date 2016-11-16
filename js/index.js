@@ -126,10 +126,7 @@ d3.json("block_trees.json", function(error, data) {
     // a list of the tree types, sorted by how common they are
     var treeList = treeNames.values().sort(function(a,b) { return popularTreeCounts[b] - popularTreeCounts[a]} );
     var itemBarWidth = 20;
-    var itemBarScale = d3.scaleLinear()
-                         .domain([0, popularTreeCounts[treeList[0]]])
-                         .range([4,20])
-    
+    var itemBarLength = 6
 
     var halfTreeListLength = Math.ceil(treeList.length / 2);
     var legendItems = gLegend.selectAll('.legend-item')
@@ -147,10 +144,10 @@ d3.json("block_trees.json", function(error, data) {
         .attr('dx', 4);
 
     legendItems.append('rect')
-        .attr('x', function(d) { return -itemBarScale(popularTreeCounts[d]); })
+        .attr('x', -itemBarLength)
         .attr('y', 2)
         .attr('height', legendRowHeight - 4)
-        .attr('width', function(d) { return itemBarScale(popularTreeCounts[d]); })
+        .attr('width', itemBarLength)
         .classed('legend-rect', true)
         .style('fill', function(d) { return colorScale(d) }) ;
 
@@ -175,13 +172,15 @@ d3.json("roads.topo", function(error, data1) {
     .attr('d', path)
 });
 
+/*
 d3.xml("img/tree.svg").mimeType("image/svg+xml").get(function(error, xml) {
       if (error) throw error;
 
       gBackground
           .attr('transform', 'translate(270,10)scale(0.6)')
-          .style('opacity', 0.08)
+          .style('opacity', 0.06)
           .node()
           .appendChild(xml.documentElement);
       
 });
+*/
