@@ -29,3 +29,9 @@ text {
     opacity: 1.0;
     stroke-width: 3;
 }
+
+text.title {
+    font: 20px sans-serif;
+    font-weight: bold;
+    opacity: .7;
+}

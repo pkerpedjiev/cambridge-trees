@@ -16,7 +16,15 @@ var legendRowHeight = 10;
 var gBlocks = g.append('g');
 var gRoads = g.append('g')
 var gLegend = svg.append('g')
-                 .attr('transform', 'translate(' + (width - 2 * legendColumnWidth - 10) + ',20)')
+                 .attr('transform', 'translate(' + (width - 2 * legendColumnWidth - 10) + ',55)')
+
+svg.append('text')
+.classed('title', true)
+.text("Cambridge Tree Map")
+.attr('x', 430)
+.attr('y', 40)
+.attr('text-anchor', 'middle')
+;
 
 
 var projection = d3.geoMercator()
