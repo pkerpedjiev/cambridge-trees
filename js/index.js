@@ -114,7 +114,6 @@ d3.json("block_trees.json", function(error, data) {
 
     /* scale to fit all of cambridge */
     // https://bl.ocks.org/mbostock/4699541
-    /*
     var bounds = path.bounds(data),
     dx = bounds[1][0] - bounds[0][0],
     dy = bounds[1][1] - bounds[0][1],
@@ -124,7 +123,6 @@ d3.json("block_trees.json", function(error, data) {
     translate = [width / 2 - scale * x, height / 2 - scale * y];
 
     g.attr('transform', "translate(" + translate + ")scale(" + scale + ")")
-    */
                        
     /*
     //add the legend
