@@ -8,6 +8,8 @@ var bgRect = svg.append('rect')
               .attr('height', height)
               .attr('fill', 'white');
 
+var gBackground = d3.select('svg')
+          .append('g')
 var g = svg.append('g')
 
 var legendColumnWidth = 90;
@@ -171,4 +173,15 @@ d3.json("roads.topo", function(error, data1) {
     .append('path')
     .attr("class", "road")
     .attr('d', path)
+});
+
+d3.xml("img/tree.svg").mimeType("image/svg+xml").get(function(error, xml) {
+      if (error) throw error;
+
+      gBackground
+          .attr('transform', 'translate(270,10)scale(0.6)')
+          .style('opacity', 0.08)
+          .node()
+          .appendChild(xml.documentElement);
+      
 });
