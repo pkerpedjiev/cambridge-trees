@@ -42,20 +42,20 @@ ogr2ogr -t_srs WGS84 -f GeoJSON roads.json BASEMAP_Roads.shp
 
 Convert the roads data to TopoJSON to save some space:
 
-```
+```bash
 geo2topo roads.json -q 1000 > roads.topo
 ```
 
 Count the trees in each block (Combining different types of Maple, Elm, Linden, etc...). 
 To avoid that find the line with `split(',')` in `trees_to_blocks.py`.:
 
-```
+```bash
 pypy scripts/trees_to_blocks.py trees.json blocks.json
 ```
 
 Convert the trees file to `topojson` to save space. Quantizing values reduces the file size from ~8Mb to ~500Kb, at the expense of some barely visible resolution.
 
-```
+```bash
 geo2topo trees.json -q 1000 > trees.topo
 ```
 
@@ -65,13 +65,13 @@ geo2topo trees.json -q 1000 > trees.topo
 
 The `index.html` file is minimal. It simply sets up an SVG canvas and then loads `d3`, `topojson` and our bespoke drawing script (`index.js`). 
 
-```
->><body>
+```html
+<body>
 
       <link rel="stylesheet" href="css/index.css">
->>    <svg width=400 height=400 style="border: 1px solid">
+      <svg width=400 height=400 style="border: 1px solid">
 
->>    </svg>
+      </svg>
 
       <script src="https://d3js.org/d3.v4.min.js"></script>
       <script src="//d3js.org/topojson.v1.min.js"></script>
@@ -84,7 +84,7 @@ The `index.html` file is minimal. It simply sets up an SVG canvas and then loads
 
 Because this tutorial is meant to focus more on the D3 part of the mapmaking process, I'll just paste the contents of the stylesheet that accompanies it here and go through all the remaining motions assuming it's in place and properly referenced from `index.html`:
 
-```
+```css
 @import url('https://fonts.googleapis.com/css?family=Francois+One');
 
 .block {
@@ -140,7 +140,7 @@ Making the map itself requires a few steps. These steps will be enumerated in th
 
 The first thing we need to do is draw each parcel. This requires creating an SVG group, loading the blocks GeoJSON, and coloring each parcel according to what the most popular tree there is:
 
-```
+```javascript
 var width=550, height=400;
 
 var svg = d3.select('svg')
@@ -179,7 +179,7 @@ Wrong! What happened? We're going to assume that our stylesheet is properly form
 
 The paths are there. They're just *way* off the visible area. Annoying. A quick google search yields a solution in [one of Mike Bostock's blocks](https://bl.ocks.org/mbostock/4699541):
 
-```
+```javascript
     var bounds = path.bounds(data),
     dx = bounds[1][0] - bounds[0][0],
     dy = bounds[1][1] - bounds[0][1],
@@ -208,7 +208,7 @@ And use them to create a color scale:
     
 The colors that are used here were generated using [Colorgorical](http://vrl.cs.brown.edu/color). Now when we draw each block, we simply need to change its `fill` according to its most common tree species:
 
-```
+```javascript
     gBlocks.selectAll('.block')
     .data(data.features)
     .enter()
@@ -226,7 +226,7 @@ The colors that are used here were generated using [Colorgorical](http://vrl.cs.
 
 Colors are nice, but without a legend it's impossible to tell what they mean. I'd like the legend to be ordered according to the prevalence of the tree species. For this we can count in how many blocks each species is the most common and use that to sort our list of tree names. Now the most common (Maple) is first and others are ordered behind it.
 
-```
+```javascript
     var popularTreeCounts = {}
     for (let i = 0; i < data.features.length; i++) {
         var treeName = data.features[i].properties.most_common_tree_name
@@ -241,7 +241,7 @@ Colors are nice, but without a legend it's impossible to tell what they mean. I'
 
 With 25 species in our list, we'll need two columns to display them all:
 
-```
+```javascript
     var halfTreeListLength = Math.ceil(treeList.length / 2);
     var legendItems = gLegend.selectAll('.legend-item')
     .data(treeList)
@@ -262,7 +262,7 @@ With 25 species in our list, we'll need two columns to display them all:
 
 And... we'll need to match them up with how they're colored in the map. 
 
-```
+```javascript
     var itemBarWidth = 20;
     var itemBarLength = 6
 
@@ -283,7 +283,7 @@ What we have so far is great for seeing that Maples and Honeylocusts are the mos
 
 Using D3's event handlers, we can highlight the regions that viewers hover over in both the map and the legend to unambiguously show which species is most common where. To this, we'll define two helper functions: `selectTreeType` and `unselectAllTreeTypes`. These functions will highlight regions associated with a particular species (on both the map and legend), and unhighlight all regions, respectively:
 
-```
+```javascript
     function selectTreeType(treeType) {
         var allBlocks = gBlocks.selectAll('.block')
         var sameBlocks = allBlocks.filter(function(e) {
@@ -308,7 +308,7 @@ Using D3's event handlers, we can highlight the regions that viewers hover over 
 
 With these functions in place, we'll add event handlers to the species associated regions (e.g. map blocks and legend items) such that whenever hovers over a region everything is unhighlighted (to remove previous highlights) and the selected region is highlighted.
 
-```
+```javascript
     legendItems.on('mouseover', function(d) {
         d3.selectAll('.legend-rect').classed('selected', false);
         d3.select(this).select('rect').classed('selected', true)
@@ -340,13 +340,13 @@ or... the one block where Hornbeam is the most common:
 
 If the mouse leaves one of the species-associated regions, we want to unhighlight everything:
 
-```
+```javascript
     bgRect.on('mouseover', unselectAllTreeTypes);
 ```
 
 Before we finish off the data-driven section, let's add some roads so that we know where everything is. This is easy to do with our previously generated topojson file. 
 
-```
+```javascript
 d3.json("roads.topo", function(error, data1) {
     gRoads.selectAll('.road')
     .data(topojson.feature(data1,data1.objects.roads).features)
@@ -363,7 +363,7 @@ d3.json("roads.topo", function(error, data1) {
 
 No map or graphic is complete without a title and some explanation. We need a group below all the others, as well as some text for the tile and description. Note that getting wrapped text is difficult using SVG, so we'll just position each line separately.
 
-```
+```javascript
 var gBackground = d3.select('svg')
           .append('g')
           
