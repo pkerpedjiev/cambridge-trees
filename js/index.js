@@ -8,6 +8,8 @@ var bgRect = svg.append('rect')
               .attr('height', height)
               .attr('fill', 'white');
 
+var gBackground = d3.select('svg')
+          .append('g')
 var g = svg.append('g')
 
 var legendColumnWidth = 90;
@@ -33,7 +35,7 @@ texts = ['This map shows which trees are found',
          'where each species is most common']
 
 var gAbstract = svg.append('g')
-.attr('transform', 'translate(65,340)')
+.attr('transform', 'translate(20,340)')
 
 gAbstract.selectAll('.abstract')
 .data(texts)
@@ -176,10 +178,9 @@ d3.json("roads.topo", function(error, data1) {
 d3.xml("img/tree.svg").mimeType("image/svg+xml").get(function(error, xml) {
       if (error) throw error;
 
-      d3.select('svg')
-          .append('g')
-          .attr('transform', 'translate(10,337)scale(0.11)')
-          .style('opacity', 0.5)
+      gBackground
+          .attr('transform', 'translate(270,10)scale(0.6)')
+          .style('opacity', 0.08)
           .node()
           .appendChild(xml.documentElement);
       
