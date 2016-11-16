@@ -3,7 +3,7 @@
 A demo is available [as a blog post
 (emptypipes.org)](http://emptypipes.org/2016/11/16/cambridge-tree-map/) or as a
 [block](https://bl.ocks.org/pkerpedjiev/91fbba8179f5517348fdb7d5079be04a)
-(although this is missing the roads because github gists truncates the topo
+(although this may be missing the roads because github gists truncates the topo
 file).
 
 ### Running the map
