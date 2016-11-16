@@ -33,17 +33,27 @@ d3.json("block_trees.json", function(error, data) {
 
     var colorScale = d3.scaleOrdinal()
     .domain(treeNames)
-    .range(d3.schemeCategory20b.concat(d3.schemeCategory20c));
+    .range(d3.schemeCategory20);
 
-
-    function selectSameBlocks(d) {
-        // select all blocks with the same most common tree
+    function selectTreeType(treeType) {
         var allBlocks = gBlocks.selectAll('.block')
         var sameBlocks = allBlocks.filter(function(e) {
-            return e.properties.most_common_tree_name == d.properties.most_common_tree_name;
+            return e.properties.most_common_tree_name == treeType;
         });
 
-        return sameBlocks;
+        sameBlocks.classed('selected', true);
+
+        gLegend.selectAll('.legend-rect')
+            .filter(function(d) { return d == treeType; })
+            .classed('selected', true);
+    }
+
+    function unselectAllTreeTypes() {
+        gBlocks.selectAll('.block')
+            .classed('selected', false);
+
+        gLegend.selectAll('.legend-rect')
+            .classed('selected', false);
     }
 
 
@@ -56,12 +66,12 @@ d3.json("block_trees.json", function(error, data) {
     .attr('stroke', 'black')
     .style('fill', function(d) { return colorScale(d.properties.most_common_tree_name) })
     .on('mouseover', function(d) {
-        gBlocks.selectAll('.block').classed('selected', false);
-        selectSameBlocks(d).classed('selected', true);
+        unselectAllTreeTypes();
+        selectTreeType(d.properties.most_common_tree_name);
     });
 
     // mouse moves out of the map area
-    bgRect.on('mouseover', function(d) { gBlocks.selectAll('.block').classed('selected', false); });
+    bgRect.on('mouseover', unselectAllTreeTypes);
 
     /* scale to fit all of cambridge */
     // https://bl.ocks.org/mbostock/4699541
@@ -84,10 +94,10 @@ d3.json("block_trees.json", function(error, data) {
         else
             popularTreeCounts[treeName] = 1;
     }
+
+    // a list of the tree types, sorted by how common they are
     var treeList = treeNames.values().sort(function(a,b) { return popularTreeCounts[b] - popularTreeCounts[a]} );
-
     var itemBarWidth = 20;
-
     var itemBarScale = d3.scaleLinear()
                          .domain([0, popularTreeCounts[treeList[0]]])
                          .range([4,20])
@@ -98,6 +108,7 @@ d3.json("block_trees.json", function(error, data) {
     .data(treeList)
     .enter()
     .append('g')
+    .classed('legend-item', true)
     .attr('transform', function(d,i) { 
         return "translate(" + (legendColumnWidth * Math.floor(i / halfTreeListLength)) + ',' + ((i % halfTreeListLength) * legendRowHeight) + ")";
     })
@@ -115,10 +126,15 @@ d3.json("block_trees.json", function(error, data) {
         .classed('legend-rect', true)
         .style('fill', function(d) { return colorScale(d) }) ;
 
+    legendItems.on('mouseover', function(d) {
+        d3.selectAll('.legend-rect').classed('selected', false);
+        d3.select(this).select('rect').classed('selected', true)
+        gBlocks.selectAll('.block').classed('selected', false);
+        selectTreeType(d);
+    });
+
     console.log("popularTreeCounts:", popularTreeCounts);
     console.log('treeList', treeList);
-
-
 });
 
 // add the roads
