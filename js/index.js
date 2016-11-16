@@ -31,7 +31,7 @@ d3.json("block_trees.json", function(error, data) {
     var treeNames = d3.set(data.features.map(function(d) {
         return d.properties.most_common_tree_name}));
 
-    var colorList = ["rgb(202,211,250)", "rgb(52,71,180)", "rgb(86,238,173)", "rgb(32,80,46)", "rgb(135,212,207)", "rgb(38,85,130)", "rgb(142,128,251)", "rgb(194,223,125)", "rgb(119,49,41)", "rgb(244,142,155)", "rgb(186,26,23)", "rgb(44,245,43)", "rgb(31,147,131)", "rgb(53,151,33)", "rgb(162,6,85)", "rgb(253,143,47)", "rgb(157,141,136)", "rgb(241,192,57)", "rgb(132,30,164)", "rgb(226,109,248)", "rgb(63,22,249)", "rgb(50,149,233)", "rgb(254,22,244)", "rgb(249,79,156)", "rgb(239,208,165)"]  // thanks to Colorgorical
+    var colorList = ["rgb(52,71,180)", "rgb(202,211,250)","rgb(86,238,173)", "rgb(32,80,46)", "rgb(135,212,207)", "rgb(38,85,130)", "rgb(142,128,251)", "rgb(194,223,125)", "rgb(119,49,41)", "rgb(244,142,155)", "rgb(186,26,23)", "rgb(44,245,43)", "rgb(31,147,131)", "rgb(53,151,33)", "rgb(162,6,85)", "rgb(253,143,47)", "rgb(157,141,136)", "rgb(241,192,57)", "rgb(132,30,164)", "rgb(226,109,248)", "rgb(63,22,249)", "rgb(50,149,233)", "rgb(254,22,244)", "rgb(249,79,156)", "rgb(239,208,165)"]  // thanks to Colorgorical
 
     var colorScale = d3.scaleOrdinal()
     .domain(treeNames)
