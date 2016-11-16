@@ -162,7 +162,6 @@ d3.json("block_trees.json", function(error, data) {
     console.log('treeList', treeList);
 });
 
-/*
 // add the roads
 d3.json("roads.topo", function(error, data1) {
     gRoads.selectAll('.road')
@@ -173,12 +172,13 @@ d3.json("roads.topo", function(error, data1) {
     .attr('d', path)
 });
 
+/*
 d3.xml("img/tree.svg").mimeType("image/svg+xml").get(function(error, xml) {
       if (error) throw error;
 
       gBackground
           .attr('transform', 'translate(270,10)scale(0.6)')
-          .style('opacity', 0.08)
+          .style('opacity', 0.06)
           .node()
           .appendChild(xml.documentElement);
       

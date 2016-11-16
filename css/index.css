@@ -3,6 +3,7 @@
 .block {
     fill: black;
     opacity: 0.4;
+    stroke-width: 0px;
 }
 
 .block.selected {
