@@ -384,7 +384,7 @@ svg.append('text')
 ;
 
 texts = ['This map shows which trees are found',
-         'most often on each block in Cambridge',
+         'most often on each block in Cambridge.',
          'Use the mouse to hover over items',
          'in the legend or on the map to see',
          'where each species is most common']
