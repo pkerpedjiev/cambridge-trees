@@ -33,7 +33,7 @@ texts = ['This map shows which trees are found',
          'where each species is most common']
 
 var gAbstract = svg.append('g')
-.attr('transform', 'translate(68,340)')
+.attr('transform', 'translate(65,340)')
 
 gAbstract.selectAll('.abstract')
 .data(texts)
@@ -178,8 +178,8 @@ d3.xml("img/tree.svg").mimeType("image/svg+xml").get(function(error, xml) {
 
       d3.select('svg')
           .append('g')
-          .attr('transform', 'translate(10,329)scale(0.06)')
-          .style('opacity', 0.7)
+          .attr('transform', 'translate(10,337)scale(0.11)')
+          .style('opacity', 0.5)
           .node()
           .appendChild(xml.documentElement);
       
