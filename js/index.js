@@ -3,6 +3,7 @@ var width=550, height=400;
 var svg = d3.select('svg')
             .attr('width', width)
             .attr('height', height);
+/*
 var bgRect = svg.append('rect')
               .attr('width', width)
               .attr('height', height)
@@ -10,12 +11,16 @@ var bgRect = svg.append('rect')
 
 var gBackground = d3.select('svg')
           .append('g')
+*/
 var g = svg.append('g')
 
+/*
 var legendColumnWidth = 90;
 var legendRowHeight = 10;
+*/
 
 var gBlocks = g.append('g');
+/*
 var gRoads = g.append('g')
 var gLegend = svg.append('g')
                  .attr('transform', 'translate(' + (width - 2 * legendColumnWidth - 10) + ',55)')
@@ -44,6 +49,7 @@ gAbstract.selectAll('.abstract')
 .classed('abstract',true)
 .attr('y', function(d,i) { return 10 * i; })
 .text(function(d) { return d; });
+*/ 
 
 var projection = d3.geoMercator()
 .scale(1000000)
@@ -54,6 +60,7 @@ var path = d3.geoPath()
 d3.json("block_trees.json", function(error, data) {
     if (error) throw error;
 
+    /*
     var treeNames = d3.set(data.features.map(function(d) {
         return d.properties.most_common_tree_name}));
 
@@ -83,6 +90,7 @@ d3.json("block_trees.json", function(error, data) {
         gLegend.selectAll('.legend-rect')
             .classed('selected', false);
     }
+    */
 
 
     gBlocks.selectAll('.block')
@@ -92,7 +100,9 @@ d3.json("block_trees.json", function(error, data) {
     .attr("class", "block")
     .attr('d', path)
     .attr('stroke', 'black')
+    /*
     .style('fill', function(d) { return colorScale(d.properties.most_common_tree_name) })
+
     .on('mouseover', function(d) {
         unselectAllTreeTypes();
         selectTreeType(d.properties.most_common_tree_name);
@@ -100,9 +110,11 @@ d3.json("block_trees.json", function(error, data) {
 
     // mouse moves out of the map area
     bgRect.on('mouseover', unselectAllTreeTypes);
+    */
 
     /* scale to fit all of cambridge */
     // https://bl.ocks.org/mbostock/4699541
+    /*
     var bounds = path.bounds(data),
     dx = bounds[1][0] - bounds[0][0],
     dy = bounds[1][1] - bounds[0][1],
@@ -112,7 +124,9 @@ d3.json("block_trees.json", function(error, data) {
     translate = [width / 2 - scale * x, height / 2 - scale * y];
 
     g.attr('transform', "translate(" + translate + ")scale(" + scale + ")")
+    */
                        
+    /*
     //add the legend
     var popularTreeCounts = {}
     for (let i = 0; i < data.features.length; i++) {
@@ -163,8 +177,10 @@ d3.json("block_trees.json", function(error, data) {
 
     console.log("popularTreeCounts:", popularTreeCounts);
     console.log('treeList', treeList);
+    */
 });
 
+/*
 // add the roads
 d3.json("roads.topo", function(error, data1) {
     gRoads.selectAll('.road')
@@ -185,3 +201,4 @@ d3.xml("img/tree.svg").mimeType("image/svg+xml").get(function(error, xml) {
           .appendChild(xml.documentElement);
       
 });
+*/
