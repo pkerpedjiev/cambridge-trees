@@ -193,10 +193,227 @@ The paths are there. They're just *way* off the visible area. Annoying. A quick 
 
 ![image](https://cloud.githubusercontent.com/assets/2143629/20358581/59f2bdc6-abfa-11e6-8fa2-2cff0c080355.png)
 
+All of the parcels in Cambridge are plotted. They need colors. We can color them according to the most common tree species in that block. That data is in the properties of each `feature` (each feature is a block). We need to extract all of the unique tree names:
+
+    var treeNames = d3.set(data.features.map(function(d) {
+        return d.properties.most_common_tree_name}));
+        
+And use them to create a color scale:
+
+    var colorList = ["rgb(52,71,180)", "rgb(202,211,250)","rgb(86,238,173)", "rgb(32,80,46)", "rgb(135,212,207)", "rgb(38,85,130)", "rgb(142,128,251)", "rgb(194,223,125)", "rgb(119,49,41)", "rgb(244,142,155)", "rgb(186,26,23)", "rgb(44,245,43)", "rgb(31,147,131)", "rgb(53,151,33)", "rgb(162,6,85)", "rgb(253,143,47)", "rgb(157,141,136)", "rgb(241,192,57)", "rgb(132,30,164)", "rgb(226,109,248)", "rgb(63,22,249)", "rgb(50,149,233)", "rgb(254,22,244)", "rgb(249,79,156)", "rgb(239,208,165)"]  // thanks to Colorgorical
+
+    var colorScale = d3.scaleOrdinal()
+    .domain(treeNames)
+    .range(colorList);
+    
+The colors that are used here were generated using [Colorgorical](http://vrl.cs.brown.edu/color). Now when we draw each block, we simply need to change its `fill` according to its most common tree species:
+
+```
+    gBlocks.selectAll('.block')
+    .data(data.features)
+    .enter()
+    .append('path')
+    .attr("class", "block")
+    .attr('d', path)
+    .attr('stroke', 'black')
+    .style('fill', function(d) { return colorScale(d.properties.most_common_tree_name) })
+```
+
 
 ![image](https://cloud.githubusercontent.com/assets/2143629/20358521/0b1b1784-abfa-11e6-8ab3-de4498348801.png)
 
+#### Adding a legend
 
+Colors are nice, but without a legend it's impossible to tell what they mean. I'd like the legend to be ordered according to the prevalence of the tree species. For this we can count in how many blocks each species is the most common and use that to sort our list of tree names. Now the most common (Maple) is first and others are ordered behind it.
+
+```
+    var popularTreeCounts = {}
+    for (let i = 0; i < data.features.length; i++) {
+        var treeName = data.features[i].properties.most_common_tree_name
+        if (treeName in popularTreeCounts)
+            popularTreeCounts[treeName] += 1;
+        else
+            popularTreeCounts[treeName] = 1;
+            
+    // a list of the tree types, sorted by how common they are
+    var treeList = treeNames.values().sort(function(a,b) { return popularTreeCounts[b] - popularTreeCounts[a]} );
+```
+
+With 25 species in our list, we'll need two columns to display them all:
+
+```
+    var halfTreeListLength = Math.ceil(treeList.length / 2);
+    var legendItems = gLegend.selectAll('.legend-item')
+    .data(treeList)
+    .enter()
+    .append('g')
+    .classed('legend-item', true)
+    .attr('transform', function(d,i) {
+        return "translate(" + (legendColumnWidth * Math.floor(i / halfTreeListLength)) + ',' + ((i % halfTreeListLength) * legendRowHeight) + ")";
+    })
+
+    legendItems.append('text')
+        .text(function(d) { return d + " (" + popularTreeCounts[d] + ")"; })
+        .attr('dy', 8)
+        .attr('dx', 4);
+```
+
+![image](https://cloud.githubusercontent.com/assets/2143629/20360817/2b741162-ac03-11e6-87df-4e07a1ac34bc.png)
+
+And... we'll need to match them up with how they're colored in the map. 
+
+```
+    var itemBarWidth = 20;
+    var itemBarLength = 6
+
+    legendItems.append('rect')
+        .attr('x', -itemBarLength)
+        .attr('y', 2)
+        .attr('height', legendRowHeight - 4)
+        .attr('width', itemBarLength)
+        .classed('legend-rect', true)
+        .style('fill', function(d) { return colorScale(d) }) ;
+```
+
+![image](https://cloud.githubusercontent.com/assets/2143629/20361021/0d50dc1e-ac04-11e6-8238-3be778254110.png)
+
+#### Adding interaction
+
+What we have so far is great for seeing that Maples and Honeylocusts are the most common trees in the majority of Cambridge blocks. Matching the less popular ones, however, remains a difficult exercise. Having this many different colors makes it difficult to distinguish between them. For that, we need interaction.
+
+Using D3's event handlers, we can highlight the regions that viewers hover over in both the map and the legend to unambiguously show which species is most common where. To this, we'll define two helper functions: `selectTreeType` and `unselectAllTreeTypes`. These functions will highlight regions associated with a particular species (on both the map and legend), and unhighlight all regions, respectively:
+
+```
+    function selectTreeType(treeType) {
+        var allBlocks = gBlocks.selectAll('.block')
+        var sameBlocks = allBlocks.filter(function(e) {
+            return e.properties.most_common_tree_name == treeType;
+        });
+
+        sameBlocks.classed('selected', true);
+
+        gLegend.selectAll('.legend-rect')
+            .filter(function(d) { return d == treeType; })
+            .classed('selected', true);
+    }
+
+    function unselectAllTreeTypes() {
+        gBlocks.selectAll('.block')
+            .classed('selected', false);
+
+        gLegend.selectAll('.legend-rect')
+            .classed('selected', false);
+    }
+```
+
+With these functions in place, we'll add event handlers to the species associated regions (e.g. map blocks and legend items) such that whenever hovers over a region everything is unhighlighted (to remove previous highlights) and the selected region is highlighted.
+
+```
+    legendItems.on('mouseover', function(d) {
+        d3.selectAll('.legend-rect').classed('selected', false);
+        d3.select(this).select('rect').classed('selected', true)
+        gBlocks.selectAll('.block').classed('selected', false);
+        selectTreeType(d);
+    });
+
+    gBlocks.selectAll('.block')
+    .data(data.features)
+    .enter()
+    .append('path')
+    .attr("class", "block")
+    .attr('d', path)
+    .attr('stroke', 'black')
+    .style('fill', function(d) { return colorScale(d.properties.most_common_tree_name) })
+    .on('mouseover', function(d) {
+        unselectAllTreeTypes();
+        selectTreeType(d.properties.most_common_tree_name);
+    });
+```
+
+Now we can see regions where, e.g. Oak is most common:
+
+![image](https://cloud.githubusercontent.com/assets/2143629/20361452/9cc713c6-ac05-11e6-9b7c-b17ee8289acf.png)
+
+or... the one block where Hornbeam is the most common:
+
+![image](https://cloud.githubusercontent.com/assets/2143629/20363524/814ed54a-ac0d-11e6-9444-974c8e1a4369.png)
+
+If the mouse leaves one of the species-associated regions, we want to unhighlight everything:
+
+```
+    bgRect.on('mouseover', unselectAllTreeTypes);
+```
+
+Before we finish off the data-driven section, let's add some roads so that we know where everything is. This is easy to do with our previously generated topojson file. 
+
+```
+d3.json("roads.topo", function(error, data1) {
+    gRoads.selectAll('.road')
+    .data(topojson.feature(data1,data1.objects.roads).features)
+    .enter()
+    .append('path')
+    .attr("class", "road")
+    .attr('d', path)
+});
+```
+
+![image](https://cloud.githubusercontent.com/assets/2143629/20364038/afe54144-ac0f-11e6-84c8-b34dd083245c.png)
+
+#### Decoration and description
+
+No map or graphic is complete without a title and some explanation. We need a group below all the others, as well as some text for the tile and description. Note that getting wrapped text is difficult using SVG, so we'll just position each line separately.
+
+```
+var gBackground = d3.select('svg')
+          .append('g')
+          
+svg.append('text')
+.classed('title', true)
+.text("Common Trees in Cambridge")
+.attr('x', 430)
+.attr('y', 40)
+.attr('text-anchor', 'middle')
+;
+
+texts = ['This map shows which trees are found',
+         'most often on each block in Cambridge',
+         'Use the mouse to hover over items',
+         'in the legend or on the map to see',
+         'where each species is most common']
+
+var gAbstract = svg.append('g')
+.attr('transform', 'translate(20,340)')
+
+gAbstract.selectAll('.abstract')
+.data(texts)
+.enter()
+.append('text')
+.classed('abstract',true)
+.attr('y', function(d,i) { return 10 * i; })
+.text(function(d) { return d; });
+```
+
+![image](https://cloud.githubusercontent.com/assets/2143629/20364135/fc44e274-ac0f-11e6-946d-60e4a7d9cc46.png)
+
+For the final flourish, we'll show how easy it is to add an external SVG to our current image:
+
+```
+d3.xml("img/tree.svg").mimeType("image/svg+xml").get(function(error, xml) {
+      if (error) throw error;
+
+      gBackground
+          .attr('transform', 'translate(270,10)scale(0.6)')
+          .style('opacity', 0.08)
+          .node()
+          .appendChild(xml.documentElement);
+
+});
+```
+
+![image](https://cloud.githubusercontent.com/assets/2143629/20364204/3c56dad4-ac10-11e6-893e-5c762f82c0bd.png)
+
+That's it! A fully functional, interactive, data-driven map built using D3.js.
+    
 References:
 
 [1] [Transform Projections with GDAL / OGR](http://gothos.info/2009/04/transform-projections-with-gdal-ogr/)
