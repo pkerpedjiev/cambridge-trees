@@ -68,14 +68,14 @@ The `index.html` file is minimal. It simply sets up an SVG canvas and then loads
 ```html
 <body>
 
-      <link rel="stylesheet" href="css/index.css">
+      <link rel="stylesheet" href="index.css">
       <svg width=400 height=400 style="border: 1px solid">
 
       </svg>
 
       <script src="https://d3js.org/d3.v4.min.js"></script>
       <script src="//d3js.org/topojson.v1.min.js"></script>
-      <script src="js/index.js"></script>
+      <script src="index.js"></script>
 
   </body>
 ```
