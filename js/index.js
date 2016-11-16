@@ -1,7 +1,14 @@
 var width=400, height=400;
 
+var bgRect = d3.select('svg').append('rect')
+              .attr('width', width)
+              .attr('height', height)
+              .attr('fill', 'white');
+
 var g = d3.select('svg')
           .append('g')
+
+
 
 var projection = d3.geoMercator()
 .scale(1000000)
@@ -33,14 +40,37 @@ d3.json("block_trees.json", function(error, data) {
 
     var gBlocks = g.append('g');
 
+    function selectSameBlocks(d) {
+        // select all blocks with the same most common tree
+        var allBlocks = gBlocks.selectAll('.block')
+        var sameBlocks = allBlocks.filter(function(e) {
+            return e.properties.most_common_tree_name == d.properties.most_common_tree_name;
+        });
+
+        return sameBlocks;
+    }
+
+    bgRect.on('mouseover', function(d) {
+        gBlocks.selectAll('.block').style('opacity', 0.4);
+        gBlocks.selectAll('.block').attr('stroke-width', 0);
+    });
+
     gBlocks.selectAll('.block')
     .data(data.features)
     .enter()
     .append('path')
     .attr("class", "block")
     .attr('d', path)
+    .attr('stroke', 'black')
     .style('fill', function(d) { return colorScale(d.properties.most_common_tree_name) })
     .style('opacity', 0.4)
+    .on('mouseover', function(d) {
+        gBlocks.selectAll('.block').style('opacity', 0.4);
+        gBlocks.selectAll('.block').attr('stroke-width', 0);
+        selectSameBlocks(d).style('opacity', 1.0)
+        selectSameBlocks(d).attr('stroke-width', 10);
+    })
+    ;
     //.style('opacity', function(d) { return opacityScale(d.properties.total_tree_count / d.properties.area); });
 
     /* scale to fit all of cambridge */
