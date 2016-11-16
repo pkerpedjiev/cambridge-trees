@@ -14,16 +14,14 @@ var gBackground = d3.select('svg')
 */
 var g = svg.append('g')
 
-/*
 var legendColumnWidth = 90;
 var legendRowHeight = 10;
-*/
 
 var gBlocks = g.append('g');
-/*
 var gRoads = g.append('g')
 var gLegend = svg.append('g')
                  .attr('transform', 'translate(' + (width - 2 * legendColumnWidth - 10) + ',55)')
+/*
 
 svg.append('text')
 .classed('title', true)
@@ -124,7 +122,6 @@ d3.json("block_trees.json", function(error, data) {
 
     g.attr('transform', "translate(" + translate + ")scale(" + scale + ")")
                        
-    /*
     //add the legend
     var popularTreeCounts = {}
     for (let i = 0; i < data.features.length; i++) {
@@ -158,6 +155,7 @@ d3.json("block_trees.json", function(error, data) {
         .attr('dy', 8)
         .attr('dx', 4);
 
+    /*
     legendItems.append('rect')
         .attr('x', function(d) { return -itemBarScale(popularTreeCounts[d]); })
         .attr('y', 2)
@@ -165,7 +163,8 @@ d3.json("block_trees.json", function(error, data) {
         .attr('width', function(d) { return itemBarScale(popularTreeCounts[d]); })
         .classed('legend-rect', true)
         .style('fill', function(d) { return colorScale(d) }) ;
-
+    */
+    /*
     legendItems.on('mouseover', function(d) {
         d3.selectAll('.legend-rect').classed('selected', false);
         d3.select(this).select('rect').classed('selected', true)
