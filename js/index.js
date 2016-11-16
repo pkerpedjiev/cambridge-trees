@@ -3,12 +3,12 @@ var width=550, height=400;
 var svg = d3.select('svg')
             .attr('width', width)
             .attr('height', height);
-/*
 var bgRect = svg.append('rect')
               .attr('width', width)
               .attr('height', height)
               .attr('fill', 'white');
 
+/*
 var gBackground = d3.select('svg')
           .append('g')
 */
@@ -66,7 +66,6 @@ d3.json("block_trees.json", function(error, data) {
     var colorScale = d3.scaleOrdinal()
     .domain(treeNames)
     .range(colorList);
-    /*
 
     function selectTreeType(treeType) {
         var allBlocks = gBlocks.selectAll('.block')
@@ -88,7 +87,6 @@ d3.json("block_trees.json", function(error, data) {
         gLegend.selectAll('.legend-rect')
             .classed('selected', false);
     }
-    */
 
 
     gBlocks.selectAll('.block')
@@ -99,8 +97,6 @@ d3.json("block_trees.json", function(error, data) {
     .attr('d', path)
     .attr('stroke', 'black')
     .style('fill', function(d) { return colorScale(d.properties.most_common_tree_name) })
-    /*
-
     .on('mouseover', function(d) {
         unselectAllTreeTypes();
         selectTreeType(d.properties.most_common_tree_name);
@@ -108,7 +104,6 @@ d3.json("block_trees.json", function(error, data) {
 
     // mouse moves out of the map area
     bgRect.on('mouseover', unselectAllTreeTypes);
-    */
 
     /* scale to fit all of cambridge */
     // https://bl.ocks.org/mbostock/4699541
@@ -159,7 +154,7 @@ d3.json("block_trees.json", function(error, data) {
         .attr('width', itemBarLength)
         .classed('legend-rect', true)
         .style('fill', function(d) { return colorScale(d) }) ;
-    /*
+
     legendItems.on('mouseover', function(d) {
         d3.selectAll('.legend-rect').classed('selected', false);
         d3.select(this).select('rect').classed('selected', true)
@@ -169,7 +164,6 @@ d3.json("block_trees.json", function(error, data) {
 
     console.log("popularTreeCounts:", popularTreeCounts);
     console.log('treeList', treeList);
-    */
 });
 
 /*
