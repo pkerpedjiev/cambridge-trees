@@ -14,7 +14,6 @@ var path = d3.geoPath()
 d3.json("block_trees.json", function(error, data) {
     if (error) throw error;
 
-    console.log('data:', data.features);
     var treeNames = d3.set(data.features.map(function(d) {
         return d.properties.most_common_tree_name}));
 
@@ -22,9 +21,7 @@ d3.json("block_trees.json", function(error, data) {
     var treeDensities = data.features.map(function(d) {
             return d.properties.total_tree_count / d.properties.area;
         })
-    console.log('treeDensities', treeDensities);
     var opacityExtent = d3.extent(treeDensities)
-    console.log('opacityExtent', opacityExtent)
     // scale the opacity according to tree density
     var opacityScale = d3.scaleLinear()
         .domain(opacityExtent)
@@ -34,14 +31,17 @@ d3.json("block_trees.json", function(error, data) {
     .domain(treeNames)
     .range(d3.schemeCategory20b.concat(d3.schemeCategory20c));
 
-    g.selectAll('path')
+    var gBlocks = g.append('g');
+
+    gBlocks.selectAll('.block')
     .data(data.features)
     .enter()
     .append('path')
     .attr("class", "block")
     .attr('d', path)
     .style('fill', function(d) { return colorScale(d.properties.most_common_tree_name) })
-    .style('opacity', function(d) { return opacityScale(d.properties.total_tree_count / d.properties.area); });
+    .style('opacity', 0.4)
+    //.style('opacity', function(d) { return opacityScale(d.properties.total_tree_count / d.properties.area); });
 
     /* scale to fit all of cambridge */
     // https://bl.ocks.org/mbostock/4699541
@@ -54,8 +54,21 @@ d3.json("block_trees.json", function(error, data) {
     translate = [width / 2 - scale * x, height / 2 - scale * y];
 
     g.attr('transform', "translate(" + translate + ")scale(" + scale + ")")
-    d3.json("block_trees.json", function(error, data) {
+    d3.json("roads.topo", function(error, data1) {
+        console.log('data1:', data1);
+        
+        var gRoads = g.append('g')
 
+        gRoads.selectAll('.road')
+        .data(topojson.feature(data1,data1.objects.roads).features)
+        .enter()
+        .append('path')
+        .attr("class", "road")
+        .attr('d', path)
+        .style('stroke', 'black')
+        .style('stroke-width', '1px')
+        .style('fill', 'transparent')
+        .style('opacity', 0.6)
     });
 });
 
