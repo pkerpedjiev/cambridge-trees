@@ -58,6 +58,7 @@ def main():
 
     for uid in block_dict:
         sorted_trees = sorted(block_dict[uid]['trees'].items(), key=lambda x: -x[1])
+        block_dict[uid]['block']['properties']['area'] = block_dict[uid]['polygon'].area
 
         if len(sorted_trees) > 0:
             total_trees = sum([st[1] for st in sorted_trees])
