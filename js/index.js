@@ -33,7 +33,7 @@ texts = ['This map shows which trees are found',
          'where each species is most common']
 
 var gAbstract = svg.append('g')
-.attr('transform', 'translate(20,340)')
+.attr('transform', 'translate(68,340)')
 
 gAbstract.selectAll('.abstract')
 .data(texts)
@@ -171,4 +171,16 @@ d3.json("roads.topo", function(error, data1) {
     .append('path')
     .attr("class", "road")
     .attr('d', path)
+});
+
+d3.xml("img/tree.svg").mimeType("image/svg+xml").get(function(error, xml) {
+      if (error) throw error;
+
+      d3.select('svg')
+          .append('g')
+          .attr('transform', 'translate(10,329)scale(0.06)')
+          .style('opacity', 0.7)
+          .node()
+          .appendChild(xml.documentElement);
+      
 });
