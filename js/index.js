@@ -20,14 +20,14 @@ var gLegend = svg.append('g')
 
 svg.append('text')
 .classed('title', true)
-.text("Cambridge Tree Map")
+.text("Common Trees in Cambridge")
 .attr('x', 430)
 .attr('y', 40)
 .attr('text-anchor', 'middle')
 ;
 
-texts = ['This map shows the most popular',
-         'trees on each block in Cambrdige',
+texts = ['This map shows which trees are found',
+         'most often on each block in Cambridge',
          'Use the mouse to hover over items',
          'in the legend or on the map to see',
          'where each species is most common']

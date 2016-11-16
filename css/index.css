@@ -31,7 +31,8 @@ text {
 }
 
 text.title {
-    font: 20px sans-serif;
+    font-family: 'Francois One', sans-serif;
+    font-size: 15px;
     font-weight: bold;
     opacity: .7;
 }
