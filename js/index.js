@@ -60,7 +60,6 @@ var path = d3.geoPath()
 d3.json("block_trees.json", function(error, data) {
     if (error) throw error;
 
-    /*
     var treeNames = d3.set(data.features.map(function(d) {
         return d.properties.most_common_tree_name}));
 
@@ -69,6 +68,7 @@ d3.json("block_trees.json", function(error, data) {
     var colorScale = d3.scaleOrdinal()
     .domain(treeNames)
     .range(colorList);
+    /*
 
     function selectTreeType(treeType) {
         var allBlocks = gBlocks.selectAll('.block')
@@ -100,8 +100,8 @@ d3.json("block_trees.json", function(error, data) {
     .attr("class", "block")
     .attr('d', path)
     .attr('stroke', 'black')
-    /*
     .style('fill', function(d) { return colorScale(d.properties.most_common_tree_name) })
+    /*
 
     .on('mouseover', function(d) {
         unselectAllTreeTypes();
