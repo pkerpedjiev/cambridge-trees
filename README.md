@@ -402,6 +402,8 @@ gAbstract.selectAll('.abstract')
 ```
 
 That's it! A fully functional, interactive, data-driven map built using D3.js. Yay!
+
+![image](https://cloud.githubusercontent.com/assets/2143629/20364135/fc44e274-ac0f-11e6-946d-60e4a7d9cc46.png)
     
 References:
 
