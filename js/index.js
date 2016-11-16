@@ -1,16 +1,22 @@
-var width=400, height=400;
+var width=550, height=400;
 
-var bgRect = d3.select('svg').append('rect')
+var svg = d3.select('svg')
+            .attr('width', width)
+            .attr('height', height);
+var bgRect = svg.append('rect')
               .attr('width', width)
               .attr('height', height)
               .attr('fill', 'white');
 
-var g = d3.select('svg')
-          .append('g')
+var g = svg.append('g')
+
+var legendColumnWidth = 90;
+var legendRowHeight = 10;
 
 var gBlocks = g.append('g');
 var gRoads = g.append('g')
-var gLegend = g.append('g')
+var gLegend = svg.append('g')
+                 .attr('transform', 'translate(' + (width - 2 * legendColumnWidth - 10) + ',20)')
 
 
 var projection = d3.geoMercator()
@@ -70,7 +76,49 @@ d3.json("block_trees.json", function(error, data) {
     g.attr('transform', "translate(" + translate + ")scale(" + scale + ")")
                        
     //add the legend
-    //
+    var popularTreeCounts = {}
+    for (let i = 0; i < data.features.length; i++) {
+        var treeName = data.features[i].properties.most_common_tree_name
+        if (treeName in popularTreeCounts)
+            popularTreeCounts[treeName] += 1;
+        else
+            popularTreeCounts[treeName] = 1;
+    }
+    var treeList = treeNames.values().sort(function(a,b) { return popularTreeCounts[b] - popularTreeCounts[a]} );
+
+    var itemBarWidth = 20;
+
+    var itemBarScale = d3.scaleLinear()
+                         .domain([0, popularTreeCounts[treeList[0]]])
+                         .range([4,20])
+    
+
+    var halfTreeListLength = Math.ceil(treeList.length / 2);
+    var legendItems = gLegend.selectAll('.legend-item')
+    .data(treeList)
+    .enter()
+    .append('g')
+    .attr('transform', function(d,i) { 
+        return "translate(" + (legendColumnWidth * Math.floor(i / halfTreeListLength)) + ',' + ((i % halfTreeListLength) * legendRowHeight) + ")";
+    })
+
+    legendItems.append('text')
+        .text(function(d) { return d + " (" + popularTreeCounts[d] + ")"; })
+        .attr('dy', 8)
+        .attr('dx', 4);
+
+    legendItems.append('rect')
+        .attr('x', function(d) { return -itemBarScale(popularTreeCounts[d]); })
+        .attr('y', 2)
+        .attr('height', legendRowHeight - 4)
+        .attr('width', function(d) { return itemBarScale(popularTreeCounts[d]); })
+        .classed('legend-rect', true)
+        .style('fill', function(d) { return colorScale(d) }) ;
+
+    console.log("popularTreeCounts:", popularTreeCounts);
+    console.log('treeList', treeList);
+
+
 });
 
 // add the roads
