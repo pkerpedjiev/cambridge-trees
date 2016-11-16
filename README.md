@@ -29,6 +29,7 @@ wget http://gis.cambridgema.gov/download/shp/BASEMAP_Roads.shp.zip
 
 unzip ENVIRONMENTAL_StreetTrees.shp.zip
 unzip ASSESSING_ParcelMapIndexFY2016.shp.zip
+unzip BASEMAP_Roads.shp.zip
 ```
 
 Convert to GeoJSON and WGS84 coordinates [1,2]:
