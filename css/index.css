@@ -35,3 +35,8 @@ text.title {
     font-weight: bold;
     opacity: .7;
 }
+
+text.abstract {
+    font-style: italic;
+    opacity: 0.9;
+}

@@ -26,6 +26,22 @@ svg.append('text')
 .attr('text-anchor', 'middle')
 ;
 
+texts = ['This map shows the most popular',
+         'trees on each block in Cambrdige',
+         'Use the mouse to hover over items',
+         'in the legend or on the map to see',
+         'where each species is most common']
+
+var gAbstract = svg.append('g')
+.attr('transform', 'translate(20,340)')
+
+gAbstract.selectAll('.abstract')
+.data(texts)
+.enter()
+.append('text')
+.classed('abstract',true)
+.attr('y', function(d,i) { return 10 * i; })
+.text(function(d) { return d; });
 
 var projection = d3.geoMercator()
 .scale(1000000)
